@@ -11,8 +11,9 @@ namespace Zend\Stdlib\Hydrator;
 
 use Zend\Stdlib\Hydrator\Filter\FilterInterface;
 use Zend\Stdlib\Hydrator\Filter\FilterComposite;
+use Zend\Stdlib\Hydrator\Filter\FilterProviderInterface;
 
-interface FilterEnabledInterface
+interface FilterEnabledInterface extends FilterProviderInterface
 {
     /**
      * Add a new filter to take care of what needs to be hydrated.
@@ -36,13 +37,6 @@ interface FilterEnabledInterface
      * @return FilterComposite
      */
     public function addFilter($name, $filter, $condition = FilterComposite::CONDITION_OR);
-
-    /**
-     * Get the filter instance
-     *
-     * @return FilterComposite
-     */
-    public function getFilter();
 
     /**
      * Check whether a specific filter exists at key $name or not
