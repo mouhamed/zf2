@@ -11,7 +11,7 @@ namespace Zend\Stdlib\Hydrator;
 
 use Zend\Stdlib\Exception;
 
-class ArraySerializable extends AbstractHydrator
+class ArraySerializable implements HydratorInterface
 {
 
     /**
@@ -31,18 +31,7 @@ class ArraySerializable extends AbstractHydrator
             ));
         }
 
-        $data = $object->getArrayCopy();
-
-        foreach ($data as $name => $value) {
-            if (!$this->getFilter()->filter($name)) {
-                unset($data[$name]);
-                continue;
-            }
-
-            $data[$name] = $this->extractValue($name, $value);
-        }
-
-        return $data;
+        return $object->getArrayCopy();
     }
 
     /**
@@ -58,11 +47,6 @@ class ArraySerializable extends AbstractHydrator
      */
     public function hydrate(array $data, $object)
     {
-        $self = $this;
-        array_walk($data, function (&$value, $name) use ($self) {
-            $value = $self->hydrateValue($name, $value);
-        });
-
         if (is_callable(array($object, 'exchangeArray'))) {
             $object->exchangeArray($data);
         } elseif (is_callable(array($object, 'populate'))) {
@@ -72,6 +56,7 @@ class ArraySerializable extends AbstractHydrator
                 '%s expects the provided object to implement exchangeArray() or populate()', __METHOD__
             ));
         }
+
         return $object;
     }
 }
